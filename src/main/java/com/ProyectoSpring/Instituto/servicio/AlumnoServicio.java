@@ -32,7 +32,7 @@ public class AlumnoServicio implements IAlumnoServicio {
     @Override
     public Alumno buscarPorId(Long id) {
         Alumno alumno = alumnoRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Alumno no encontrado con id: " + id));
+                .orElseThrow(() -> new RuntimeException("Alumno no encontrado con i: " + id));
         return alumno;
     }
 
