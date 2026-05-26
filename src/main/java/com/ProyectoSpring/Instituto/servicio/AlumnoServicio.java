@@ -48,4 +48,9 @@ public class AlumnoServicio implements IAlumnoServicio {
             alumnoRepo.delete(alumno);
         }
     }
+
+    @Override
+    public List<Alumno> buscarPorApellido(String apellido) {
+        return alumnoRepo.findByApellido(apellido);
+    }
 }

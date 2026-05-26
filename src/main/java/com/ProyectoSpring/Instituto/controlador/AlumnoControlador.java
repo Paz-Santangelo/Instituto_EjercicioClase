@@ -26,6 +26,11 @@ public class AlumnoControlador {
         return alumnoServicio.buscarPorId(id);
     }
 
+    @GetMapping("/buscar/{apellido}")
+    public List<Alumno> buscarPorApellido(@PathVariable String apellido) {
+        return alumnoServicio.buscarPorApellido(apellido);
+    }
+
     @PostMapping("/guardar")
     public ResponseEntity<Alumno> guardarAlumno1(@RequestBody Alumno alumno) {
         Alumno alumnoGuardado = alumnoServicio.guardarAlumno(alumno);
