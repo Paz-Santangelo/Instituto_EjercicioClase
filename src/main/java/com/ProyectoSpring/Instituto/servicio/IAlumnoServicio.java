@@ -13,4 +13,6 @@ public interface IAlumnoServicio {
     List<Alumno> listarTodos();
 
     void eliminarAlumno(Long id);
+
+    List<Alumno> buscarPorApellido(String apellido);
 }
