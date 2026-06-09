@@ -3,9 +3,11 @@ package com.ProyectoSpring.Instituto.servicio;
 import com.ProyectoSpring.Instituto.dto.request.AlumnoDtoRequest;
 import com.ProyectoSpring.Instituto.dto.response.AlumnoDtoResponse;
 import com.ProyectoSpring.Instituto.entidad.Alumno;
+import com.ProyectoSpring.Instituto.error.NoEncontradoExcepcion;
 import com.ProyectoSpring.Instituto.mapper.AlumnoMapper;
 import com.ProyectoSpring.Instituto.repositorio.AlumnoRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,18 +36,7 @@ public class AlumnoServicio implements IAlumnoServicio {
 
     @Override
     public AlumnoDtoResponse guardarAlumnoDto(AlumnoDtoRequest alumnoDto) {
-        // Validar que el nombre no esté vacío
-        if (alumnoDto.getNombre() == null || alumnoDto.getNombre().trim().isEmpty()) {
-            throw new IllegalArgumentException("El nombre del alumno no puede estar vacío");
-        }
-
-        // Validar que el apellido no esté vacío
-        if (alumnoDto.getApellido() == null || alumnoDto.getApellido().trim().isEmpty()) {
-            throw new IllegalArgumentException("El apellido del alumno no puede estar vacío");
-        }
-
         Alumno alumnoMapeado = AlumnoMapper.toEntity(alumnoDto);
-
         return AlumnoMapper.toDto(alumnoRepo.save(alumnoMapeado));
     }
 
@@ -53,14 +44,14 @@ public class AlumnoServicio implements IAlumnoServicio {
     @Override
     public Alumno buscarPorId(Long id) {
         Alumno alumno = alumnoRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Alumno no encontrado con i: " + id));
+                .orElseThrow(() -> new NoEncontradoExcepcion(HttpStatus.NOT_FOUND, "Alumno no encontrado con id: " + id));
         return alumno;
     }
 
     @Override
     public AlumnoDtoResponse buscarPorIdDto(Long id) {
         Alumno alumno = alumnoRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Alumno no encontrado con id: " + id));
+                .orElseThrow(() -> new NoEncontradoExcepcion(HttpStatus.NOT_FOUND, "Alumno no encontrado con id: " + id));
 
         return AlumnoMapper.toDto(alumno);
     }

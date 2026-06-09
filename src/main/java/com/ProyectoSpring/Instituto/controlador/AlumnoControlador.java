@@ -4,6 +4,7 @@ import com.ProyectoSpring.Instituto.dto.request.AlumnoDtoRequest;
 import com.ProyectoSpring.Instituto.dto.response.AlumnoDtoResponse;
 import com.ProyectoSpring.Instituto.entidad.Alumno;
 import com.ProyectoSpring.Instituto.servicio.IAlumnoServicio;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,7 +52,7 @@ public class AlumnoControlador {
     }
 
     @PostMapping("/guardar-dto")
-    public ResponseEntity<String> guardarAlumnoDto(@RequestBody AlumnoDtoRequest alumno) {
+    public ResponseEntity<String> guardarAlumnoDto(@Valid @RequestBody AlumnoDtoRequest alumno) {
         alumnoServicio.guardarAlumnoDto(alumno);
         return ResponseEntity.status(HttpStatus.CREATED).body("Alumno guardado correctamente");
     }
