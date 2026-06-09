@@ -1,5 +1,7 @@
 package com.ProyectoSpring.Instituto.controlador;
 
+import com.ProyectoSpring.Instituto.dto.request.AlumnoDtoRequest;
+import com.ProyectoSpring.Instituto.dto.response.AlumnoDtoResponse;
 import com.ProyectoSpring.Instituto.entidad.Alumno;
 import com.ProyectoSpring.Instituto.servicio.IAlumnoServicio;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,11 @@ public class AlumnoControlador {
         return alumnoServicio.buscarPorId(id);
     }
 
+    @GetMapping("/obtener-alumno-dto/{id}")
+    public AlumnoDtoResponse buscarPorIdDto(@PathVariable Long id) {
+        return alumnoServicio.buscarPorIdDto(id);
+    }
+
     @GetMapping("/buscar/{apellido}")
     public List<Alumno> buscarPorApellido(@PathVariable String apellido) {
         return alumnoServicio.buscarPorApellido(apellido);
@@ -40,6 +47,12 @@ public class AlumnoControlador {
     @PostMapping("/guardar2")
     public ResponseEntity<String> guardarAlumno2(@RequestBody Alumno alumno) {
         alumnoServicio.guardarAlumno(alumno);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Alumno guardado correctamente");
+    }
+
+    @PostMapping("/guardar-dto")
+    public ResponseEntity<String> guardarAlumnoDto(@RequestBody AlumnoDtoRequest alumno) {
+        alumnoServicio.guardarAlumnoDto(alumno);
         return ResponseEntity.status(HttpStatus.CREATED).body("Alumno guardado correctamente");
     }
 
