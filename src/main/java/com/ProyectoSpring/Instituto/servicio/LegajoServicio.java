@@ -2,9 +2,11 @@ package com.ProyectoSpring.Instituto.servicio;
 
 import com.ProyectoSpring.Instituto.entidad.Alumno;
 import com.ProyectoSpring.Instituto.entidad.Legajo;
+import com.ProyectoSpring.Instituto.error.NoEncontradoExcepcion;
 import com.ProyectoSpring.Instituto.repositorio.AlumnoRepositorio;
 import com.ProyectoSpring.Instituto.repositorio.LegajoRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -48,7 +50,7 @@ public class LegajoServicio implements ILegajoServicio {
     @Override
     public Legajo buscarPorId(Long id) {
         return legajoRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Legajo no encontrado con id: " + id));
+                .orElseThrow(() -> new NoEncontradoExcepcion(HttpStatus.NOT_FOUND, "Legajo no encontrado con id: " + id));
     }
 
     @Override
