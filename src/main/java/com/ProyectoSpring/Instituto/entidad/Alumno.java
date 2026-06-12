@@ -24,6 +24,9 @@ public class Alumno {
     @OneToOne(mappedBy = "alumno", cascade = CascadeType.ALL, orphanRemoval = true)
     private Legajo legajo;
 
+    @OneToOne
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
 
     @ManyToMany
     @JoinTable(name = "alumno_materia", joinColumns = @JoinColumn(name = "alumno_id"),
