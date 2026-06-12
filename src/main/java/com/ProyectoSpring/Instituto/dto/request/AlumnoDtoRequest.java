@@ -15,4 +15,5 @@ public class AlumnoDtoRequest {
     private String nombre;
     @NotBlank(message = "Por favor, ingrese el apellido del alumno.")
     private String apellido;
+    private Long idUsuario;
 }
