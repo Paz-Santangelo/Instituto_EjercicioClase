@@ -5,7 +5,7 @@ import java.util.List;
 
 public class RolDTO {
 
-    private static final List<String> VALID_ROLES = Arrays.asList("USER", "OWNER", "MANAGEMENT", "ADMIN");
+    private static final List<String> VALID_ROLES = Arrays.asList("ALUMNO", "PROFESOR", "SECRETARIO");
 
     public static boolean isValidRole(String role) {
         if (role == null) {

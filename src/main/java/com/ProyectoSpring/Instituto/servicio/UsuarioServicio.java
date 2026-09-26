@@ -69,11 +69,9 @@ public class UsuarioServicio implements IUsuarioServicio {
     }
 
     @Override
-    public UsuarioDTO getUserById(Long id) {
-        Usuario user = usuarioRepo.findById(id)
+    public Usuario getUserById(Long id) {
+        return usuarioRepo.findById(id)
                 .orElseThrow(() -> new NoEncontradoExcepcion(HttpStatus.NOT_FOUND, "Usuario no encontrado."));
-
-        return UserMapper.toDTO(user);
     }
 
     @Override
