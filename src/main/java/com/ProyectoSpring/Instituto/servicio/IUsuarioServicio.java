@@ -12,9 +12,9 @@ public interface IUsuarioServicio {
 
     public UsuarioDTO login(LoginDTO loginDto);
 
-    public List<UsuarioDTO> getAllUsers();
+    public Usuario getUserById(Long id);
 
-    public UsuarioDTO getUserById(Long id);
+    public List<UsuarioDTO> getAllUsers();
 
     public UsuarioDTO getUserByEmail(String email);
 

@@ -1,6 +1,7 @@
 package com.ProyectoSpring.Instituto.controlador;
 
 import com.ProyectoSpring.Instituto.dto.request.AlumnoDtoRequest;
+import com.ProyectoSpring.Instituto.dto.request.AlumnoConLegajoRequest;
 import com.ProyectoSpring.Instituto.dto.response.AlumnoDtoResponse;
 import com.ProyectoSpring.Instituto.entidad.Alumno;
 import com.ProyectoSpring.Instituto.servicio.IAlumnoServicio;
@@ -20,20 +21,27 @@ public class AlumnoControlador {
     @Autowired
     private IAlumnoServicio alumnoServicio;
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+//    @PreAuthorize("hasAuthority('SECRETARIO')")
     @PostMapping("/guardar-dto")
     public ResponseEntity<String> guardarAlumnoDto(@Valid @RequestBody AlumnoDtoRequest alumno) {
         alumnoServicio.guardarAlumnoDto(alumno);
         return ResponseEntity.status(HttpStatus.CREATED).body("Alumno guardado correctamente");
     }
 
-    @PreAuthorize("hasAuthority('PROFESOR') or hasAuthority('ADMIN')")
+    @PostMapping("/guardar-con-legajo")
+    public ResponseEntity<AlumnoDtoResponse> guardarAlumnoLegajo(
+            @Valid @RequestBody AlumnoConLegajoRequest dto) {
+        AlumnoDtoResponse alumnoGuardado = alumnoServicio.guardarAlumnoLegajo(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(alumnoGuardado);
+    }
+
+//    @PreAuthorize("hasAuthority('PROFESOR') or hasAuthority('SECRETARIO')")
     @GetMapping("/obtener/todos")
-    public List<Alumno> listarTodos() {
+    public List<AlumnoDtoResponse> listarTodos() {
         return alumnoServicio.listarTodos();
     }
 
-    @PreAuthorize("hasAuthority('PROFESOR') or hasAuthority('ADMIN') or hasAuthority('ALUMNO')")
+//    @PreAuthorize("hasAuthority('PROFESOR') or hasAuthority('SECRETARIO') or hasAuthority('ALUMNO')")
     @GetMapping("/obtener-alumno-dto/{id}")
     public AlumnoDtoResponse buscarPorIdDto(@PathVariable Long id) {
         return alumnoServicio.buscarPorIdDto(id);
@@ -47,22 +55,5 @@ public class AlumnoControlador {
     @GetMapping("/buscar/{apellido}")
     public List<Alumno> buscarPorApellido(@PathVariable String apellido) {
         return alumnoServicio.buscarPorApellido(apellido);
-    }
-
-    @GetMapping("/obtener/{id}")
-    public Alumno buscarPorId(@PathVariable Long id) {
-        return alumnoServicio.buscarPorId(id);
-    }
-
-    @PostMapping("/guardar")
-    public ResponseEntity<Alumno> guardarAlumno1(@RequestBody Alumno alumno) {
-        Alumno alumnoGuardado = alumnoServicio.guardarAlumno(alumno);
-        return ResponseEntity.status(HttpStatus.CREATED).body(alumnoGuardado);
-    }
-
-    @PostMapping("/guardar2")
-    public ResponseEntity<String> guardarAlumno2(@RequestBody Alumno alumno) {
-        alumnoServicio.guardarAlumno(alumno);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Alumno guardado correctamente");
     }
 }

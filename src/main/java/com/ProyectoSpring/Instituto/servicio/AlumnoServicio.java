@@ -1,17 +1,19 @@
 package com.ProyectoSpring.Instituto.servicio;
 
 import com.ProyectoSpring.Instituto.dto.request.AlumnoDtoRequest;
+import com.ProyectoSpring.Instituto.dto.request.AlumnoConLegajoRequest;
 import com.ProyectoSpring.Instituto.dto.response.AlumnoDtoResponse;
 import com.ProyectoSpring.Instituto.entidad.Alumno;
 import com.ProyectoSpring.Instituto.entidad.Usuario;
 import com.ProyectoSpring.Instituto.error.NoEncontradoExcepcion;
 import com.ProyectoSpring.Instituto.mapper.AlumnoMapper;
 import com.ProyectoSpring.Instituto.repositorio.AlumnoRepositorio;
-import com.ProyectoSpring.Instituto.repositorio.UsuarioRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -21,17 +23,33 @@ public class AlumnoServicio implements IAlumnoServicio {
     private AlumnoRepositorio alumnoRepo;
 
     @Autowired
-    private UsuarioRepositorio usuarioRepo;
+    private IUsuarioServicio usuarioServicio;
 
     @Override
     public AlumnoDtoResponse guardarAlumnoDto(AlumnoDtoRequest alumnoDto) {
         Alumno alumnoMapeado = AlumnoMapper.toEntity(alumnoDto);
 
-        Usuario usuario = usuarioRepo.findById(alumnoDto.getIdUsuario())
-                .orElseThrow(() -> new NoEncontradoExcepcion(HttpStatus.NOT_FOUND, "Usuario no encontrado con id: " + alumnoDto.getIdUsuario()));
+        Usuario usuario = usuarioServicio.getUserById(alumnoDto.getIdUsuario());
         alumnoMapeado.setUsuario(usuario);
 
         return AlumnoMapper.toDto(alumnoRepo.save(alumnoMapeado));
+    }
+
+    @Override
+    @Transactional
+    public AlumnoDtoResponse guardarAlumnoLegajo(AlumnoConLegajoRequest dto) {
+        Alumno alumno = AlumnoMapper.toEntityConLegajo(dto);
+
+        if (dto.getIdUsuario() != null) {
+            Usuario usuario = usuarioServicio.getUserById(dto.getIdUsuario());
+            alumno.setUsuario(usuario);
+        }
+
+        alumno.getLegajo().setFechaAlta(LocalDate.now());
+
+        // Alumno es la raíz del agregado y la relación posee cascade = ALL:
+        // al guardar el alumno también se persiste su legajo de forma atómica.
+        return AlumnoMapper.toDto(alumnoRepo.save(alumno));
     }
 
     @Override
@@ -52,30 +70,14 @@ public class AlumnoServicio implements IAlumnoServicio {
     @Override
     public void eliminarAlumno(Long id) {
         Alumno alumno = buscarPorId(id);
-        if (alumno != null) {
-            alumnoRepo.delete(alumno);
-        }
+        alumnoRepo.delete(alumno);
     }
 
     @Override
-    public Alumno guardarAlumno(Alumno alumno) {
-        // Validar que el nombre no esté vacío
-        if (alumno.getNombre() == null || alumno.getNombre().trim().isEmpty()) {
-            throw new IllegalArgumentException("El nombre del alumno no puede estar vacío");
-        }
-
-        // Validar que el apellido no esté vacío
-        if (alumno.getApellido() == null || alumno.getApellido().trim().isEmpty()) {
-            throw new IllegalArgumentException("El apellido del alumno no puede estar vacío");
-        }
-
-        // Si las validaciones pasan, se guarda el alumno
-        return alumnoRepo.save(alumno);
-    }
-
-    @Override
-    public List<Alumno> listarTodos() {
-        return alumnoRepo.findAll();
+    public List<AlumnoDtoResponse> listarTodos() {
+        return alumnoRepo.findAll().stream()
+                .map(AlumnoMapper::toDto)
+                .toList();
     }
 
     @Override
